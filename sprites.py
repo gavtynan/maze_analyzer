@@ -4,7 +4,7 @@ from settings import *
 
 class RandomMover(pg.sprite.Sprite):
     def __init__(self, game, x, y):
-        self.groups = self.game.all_sprites
+        self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -13,18 +13,34 @@ class RandomMover(pg.sprite.Sprite):
         self.x = x
         self.y = y
 
-    def collide_with_walls(self, dx=0, dy=0):
-        for wall in self.game.walls:
-            if wall.x == self.x + dx and wall.y == self.y + dy:
-                return True
-        return False
-
     def move(self, dx = 0, dy = 0):
         self.x += dx
         self.y += dy
 
     def determine_move(self):
-        pass ## WE ARE HERE
+        horiz_or_vert = random.randint(1,2)
+
+        if(horiz_or_vert == 1):
+            stepx = random.randrange(-1,2,2)
+            if not self.collide_with_walls(dx = stepx, dy = 0):
+                self.move(dx = stepx, dy = 0)
+                
+        if(horiz_or_vert == 2):
+            stepy = random.randrange(-1, 2, 2)
+            if not self.collide_with_walls(dx = 0, dy = stepy):
+                self.move(dx = 0, dy = stepy)
+        
+    def collide_with_walls(self, dx=0, dy=0):
+        for wall in self.game.walls:
+            print(wall.x)
+            print(wall.y)
+            if wall.x == self.x + dx and wall.y == self.y + dy:
+                return True
+            return False
+        
+    def update(self):
+        self.rect.x = self.x * TILESIZE
+        self.rect.y = self.y * TILESIZE
         
         
     

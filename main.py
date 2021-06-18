@@ -18,8 +18,10 @@ class Game:
         pg.key.set_repeat(500, 100)#HOLD DOWN KEY TO MOVE
         self.load_data()
         self.right_hand_thread = threading.Thread(target=self.rhrule_thread, args=())
+        self.rand_thread = threading.Thread(target=self.rand_thread,args=())
         self.rh_steps = 0
         self.player_steps = 0
+        self.rando_steps = 0
         self.font = pg.font.Font('freesansbold.ttf', 20)
         #self.font = pg.font.SysFont("monospace", 32)
         
@@ -62,6 +64,7 @@ class Game:
         # game loop - set self.playing = False to end the game
         self.playing = True
         self.right_hand_thread.start()
+        self.rand_thread.start()
         
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
@@ -90,23 +93,27 @@ class Game:
         self.all_sprites.draw(self.screen)
         pg.display.flip()
 
-
-        #NOT DISPLAYING TEXT vv
         
         self.player_text = self.font.render("Player Steps: {0}".format(self.player_steps), 1, YELLOW)
         self.rh_text = self.font.render("RH Rule Steps: {0}".format(self.rh_steps), 1, BLUE)
-        
+        self.rando_text = self.font.render("Random Rule Steps: {0}".format(self.rando_steps), 1, LIGHTBLUE)
         self.screen.blit(self.player_text, (50, 805))
         self.screen.blit(self.rh_text, (50, 830))
+        self.screen.blit(self.rando_text, (225, 805))
         
         pg.display.update()
 
     def rhrule_thread(self):
-        
         while self.rhrule.x != self.endx or self.rhrule.y != self.endy:
             self.rh_steps = self.rh_steps + 1
             time.sleep(.1)
             self.rhrule.determine_move()
+
+    def rand_thread(self):
+        while self.rando.x != self.endx or self.rando.y != self.endy:
+            self.rando_steps = self.rando_steps + 1
+            time.sleep(.7)
+            self.rando.determine_move()
 
     def events(self):
         # catch all events here
