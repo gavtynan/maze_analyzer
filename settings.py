@@ -8,6 +8,8 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (0, 0, 225)
 LIGHTBLUE = (173, 216, 230)
+PINK = (252, 3, 215)
+ORANGE = (252, 128, 3)
 
 # game settings
 WIDTH = 928   # 16 * 64 or 32 * 32 or 64 * 16

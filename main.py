@@ -19,9 +19,11 @@ class Game:
         self.load_data()
         self.right_hand_thread = threading.Thread(target=self.rhrule_thread, args=())
         self.rand_thread = threading.Thread(target=self.rand_thread,args=())
+        self.left_hand_thread = threading.Thread(target=self.lhrule_thread, args=())
         self.rh_steps = 0
         self.player_steps = 0
         self.rando_steps = 0
+        self.lhrule_steps = 0
         self.font = pg.font.Font('freesansbold.ttf', 20)
         #self.font = pg.font.SysFont("monospace", 32)
         
@@ -40,6 +42,7 @@ class Game:
         self.walls = pg.sprite.Group()
         #self.teles = pg.sprite.Group()
         self.teles =[]
+        self.maze = []
         #spawn location
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
@@ -58,6 +61,7 @@ class Game:
         self.player = Player(self, x, y)
         self.rhrule = RightHandRule(self, x, y)
         self.rando = RandomMover(self, x, y)
+        self.lhrule = LeftHandRule(self, x ,y)
 
             
     def run(self):
@@ -65,6 +69,7 @@ class Game:
         self.playing = True
         self.right_hand_thread.start()
         self.rand_thread.start()
+        self.left_hand_thread.start()
         
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
@@ -97,9 +102,11 @@ class Game:
         self.player_text = self.font.render("Player Steps: {0}".format(self.player_steps), 1, YELLOW)
         self.rh_text = self.font.render("RH Rule Steps: {0}".format(self.rh_steps), 1, BLUE)
         self.rando_text = self.font.render("Random Rule Steps: {0}".format(self.rando_steps), 1, LIGHTBLUE)
+        self.lh_text = self.font.render("LH Rule Steps: {0}".format(self.lhrule_steps), 1, PINK)
         self.screen.blit(self.player_text, (50, 805))
         self.screen.blit(self.rh_text, (50, 830))
-        self.screen.blit(self.rando_text, (225, 805))
+        self.screen.blit(self.rando_text, (240, 805))
+        self.screen.blit(self.lh_text, (240, 830))
         
         pg.display.update()
 
@@ -112,8 +119,14 @@ class Game:
     def rand_thread(self):
         while self.rando.x != self.endx or self.rando.y != self.endy:
             self.rando_steps = self.rando_steps + 1
-            time.sleep(.7)
+            time.sleep(.1)
             self.rando.determine_move()
+
+    def lhrule_thread(self):
+        while self.lhrule.x != self.endx or self.lhrule.y != self.endy:
+            self.lhrule_steps = self.lhrule_steps + 1
+            time.sleep(.1)
+            self.lhrule.determine_move()
 
     def events(self):
         # catch all events here
