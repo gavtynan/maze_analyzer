@@ -20,6 +20,7 @@ class Game:
         self.right_hand_thread = threading.Thread(target=self.rhrule_thread, args=())
         self.rand_thread = threading.Thread(target=self.rand_thread,args=())
         self.left_hand_thread = threading.Thread(target=self.lhrule_thread, args=())
+        self.rec_thread = threading.Thread(target=self.rec_thread, args=())
         self.rh_steps = 0
         self.player_steps = 0
         self.rando_steps = 0
@@ -62,6 +63,7 @@ class Game:
         self.rhrule = RightHandRule(self, x, y)
         self.rando = RandomMover(self, x, y)
         self.lhrule = LeftHandRule(self, x ,y)
+        self.rec = Recursive(self, x, y)
 
             
     def run(self):
@@ -70,6 +72,7 @@ class Game:
         self.right_hand_thread.start()
         self.rand_thread.start()
         self.left_hand_thread.start()
+        self.rec_thread.start()
         
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
@@ -127,6 +130,9 @@ class Game:
             self.lhrule_steps = self.lhrule_steps + 1
             time.sleep(.1)
             self.lhrule.determine_move()
+
+    def rec_thread(self):
+        self.rec.start()
 
     def events(self):
         # catch all events here
